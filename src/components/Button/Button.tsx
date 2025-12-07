@@ -1,3 +1,5 @@
+import styles from "./Button.module.css";
+
 interface Props {
   color?:
     | "primary"
@@ -14,7 +16,7 @@ interface Props {
 const Button = ({ color = "primary", buttonLabel, onClick }: Props) => {
   return (
     <div>
-      <button className={`btn btn-${color}`} onClick={onClick}>
+      <button className={[styles.btn, styles[`btn-${color}`]].join(" ")} onClick={onClick}>
         {buttonLabel}
       </button>
     </div>
