@@ -1,29 +1,13 @@
 import { useState } from "react";
-import Button from "./components/Button/Button";
-
+import Cart from "./components/Cart";
+import NavBar from "./components/NavBar";
 const App = () => {
-  const [customer, setCustomer] = useState({
-    name: "John",
-    address: {
-      city: 'San Francisco',
-      state: 'CA'
-    }
-  })
-
-  const handleClick = () => {
-    setCustomer({
-      ...customer, 
-      address: {
-        ...customer.address, 
-        city: 'Los Angeles'
-      }
-    });
-  }
+  const [cartItems, setCartItems] = useState(['Product1', 'Product2', 'Product3']);
 
   return (
     <div>
-      <Button buttonLabel="Click me" onClick={handleClick}/>
-      <h2>{customer.address.city}</h2>
+      <NavBar cartItemsCount={cartItems.length} />
+      <Cart cartItems={cartItems} onClear={() => setCartItems([])} />
     </div>
   );
 };
