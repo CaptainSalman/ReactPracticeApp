@@ -1,11 +1,11 @@
-import Button from "./components/Button/Button";
+import Like from "./components/Like";
 
 const App = () => {
   return (
     <div>
-      <Button buttonLabel="click me" onClick={() => {}}></Button>
+      <Like onClick={() => {console.log('Clicked')}}/>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
