@@ -1,9 +1,9 @@
-import Like from "./components/Like";
+import { Message } from "./components/message";
 
 const App = () => {
   return (
     <div>
-      <Like onClick={() => {console.log('Clicked')}}/>
+      <Message />
     </div>
   );
 };
