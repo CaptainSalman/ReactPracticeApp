@@ -1,38 +1,51 @@
-import { useState, type FormEvent } from "react";
+import { use, useState, type FormEvent } from "react";
+import { useForm, type FieldValues } from "react-hook-form";
+
+interface FormData {
+  name: string;
+  age: number;
+}
 
 const Form = () => {
-  const [person, setPerson] = useState({
-    name: "",
-    age: '',
-  });
-  const handleSumbit = (event: FormEvent) => {
-    console.log(person);
-    event.preventDefault();
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>();
+  const onSubmit = (data: FieldValues) => console.log(data);
+
   return (
-    <form onSubmit={handleSumbit}>
+    <form onSubmit={handleSubmit(onSubmit)}>
       {/* div.mb-3 > label.form-label + input.form-control[type="text"] */}
       <div className="mb-3">
         <label htmlFor="name" className="form-label">
           Name
         </label>
         <input
-          onChange={(event) => {
-            setPerson({ ...person, name: event.target.value });
-          }}
+          {...register("name", { required: true, minLength: 3 })}
           id="name"
-          value={person.name}
           type="text"
           className="form-control"
         />
+        {errors.name?.type === "required" && (
+          <p className="text-danger">The name field is required</p>
+        )}
+        {errors.name?.type === "minLength" && (
+          <p className="text-danger">
+            The name must be at least 3 characters long.
+          </p>
+        )}
       </div>
       <div className="mb-3">
         <label htmlFor="age" className="form-label">
           Age
         </label>
-        <input onChange={(event)=> {
-          setPerson({...person, age: Number(event.target.value)})
-        }} id="age" value={person.age} type="number" className="form-control" />
+        <input
+          {...register("age")}
+          id="age"
+          type="number"
+          className="form-control"
+        />
       </div>
       <button className="btn btn-primary" type="submit">
         Submit
