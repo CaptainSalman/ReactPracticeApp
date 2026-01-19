@@ -1,18 +1,36 @@
-import { useState } from "react";
-import ProductList from "./components/ProductList";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
+interface User {
+  id: number;
+  name: string;
+}
 const App = () => {
-  const [category, setCategory] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
+  const [users, setUsers] = useState<User[]>([]);
+
+  useEffect(() => {
+    // Fetch users from an API or other source
+    axios
+      .get<User[]>("https://jsonplaceholder.typicode.com/xusers")
+      .then((res) => {
+        setUsers(res.data);
+      })
+      .catch((err) => {
+        setError(err.message);
+      });
+  }, []);
+
   return (
-    <div>
-      <select className="form-select" onChange={(event) => {setCategory(event.target.value)}}>
-        <option></option>
-        <option>Category 2</option>
-        <option>Category 3</option>
-      </select>
-      <ProductList category={category} />
-    </div>
-  )
+    <>
+      {error && <p className="text-danger">Error: {error}</p>}
+      <ul>
+        {users.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    </>
+  );
 };
 
 export default App;
