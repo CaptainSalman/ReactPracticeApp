@@ -1,6 +1,7 @@
-import axios, { AxiosError, CanceledError } from "axios";
 import { useEffect, useState } from "react";
 import { set } from "react-hook-form";
+import axios, { CanceledError } from "axios";
+import apiClient from "./services/api-client";
 
 interface User {
   id: number;
@@ -9,6 +10,7 @@ interface User {
 const App = () => {
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [isloading, setIsLoading] = useState(false);
 
   // implementation with async or await
   // useEffect(() => {
@@ -31,9 +33,10 @@ const App = () => {
   useEffect(() => {
     // Fetch users from an API or other source
     const controller = new AbortController();
+    setIsLoading(true);
     // get -> promise -> res / err
-    axios
-      .get<User[]>("https://jsonplaceholder.typicode.com/users", {
+    apiClient
+      .get<User[]>("/users", {
         signal: controller.signal,
       })
       .then((res) => {
@@ -44,6 +47,9 @@ const App = () => {
           return;
         }
         setError(err.message);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
       return () => {
         controller.abort();
@@ -53,6 +59,7 @@ const App = () => {
   return (
     <>
       {error && <p className="text-danger">Error: {error}</p>}
+      {isloading && <div className="spinner-border"></div>}
       <ul>
         {users.map((user) => (
           <li key={user.id}>{user.name}</li>
