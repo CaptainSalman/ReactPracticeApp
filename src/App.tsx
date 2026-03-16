@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-import { set } from "react-hook-form";
-import axios, { CanceledError } from "axios";
-import apiClient from "./services/api-client";
+import type { User } from "./services/userService";
+import userService from "./services/userService";
+import { CanceledError } from "./services/api-client";
 
-interface User {
-  id: number;
-  name: string;
-}
+
 const App = () => {
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
@@ -32,27 +29,24 @@ const App = () => {
 
   useEffect(() => {
     // Fetch users from an API or other source
-    const controller = new AbortController();
     setIsLoading(true);
     // get -> promise -> res / err
-    apiClient
-      .get<User[]>("/users", {
-        signal: controller.signal,
-      })
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        if(err instanceof CanceledError){
-          return;
-        }
-        setError(err.message);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    const { request, cancel } = userService.getAll<User>();
+    request
+        .then((res) => {
+            setUsers(res.data);
+        })
+        .catch((err) => {
+            if(err instanceof CanceledError){
+            return;
+            }
+            setError(err.message);
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
       return () => {
-        controller.abort();
+        cancel();
       };
   }, []);
 
