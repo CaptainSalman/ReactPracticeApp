@@ -4,7 +4,7 @@ import userService from "../services/userService";
 import { CanceledError } from "../services/api-client";
 
 const useUser = () => {
-    const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [isloading, setIsLoading] = useState(false); 
 
